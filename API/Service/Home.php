@@ -1,0 +1,28 @@
+<?php
+
+namespace API\Service;
+
+/**
+ * @author Bang
+ */
+class Home extends Base {
+
+    function __construct() {
+        parent::__construct('Home');
+    }
+
+    public function TestSuccess($email) {
+        $bag = array(
+            'email' => $email,
+        );
+        return $this->CallApi($bag, 'TestSuccess');
+    }
+
+    public function TestUnSuccess($email) {
+        $bag = array(
+            'email' => $email,
+        );
+        return $this->CallApi($bag, 'TestUnSuccess');
+    }
+
+}
