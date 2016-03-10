@@ -37,6 +37,7 @@ class Base {
         }
 
         $call_url = $this->url . '?' . http_build_query($params);
+        echo "{$call_url} \n";
         $response_content = \Net::HttpGET($call_url);
         $result = json_decode($response_content);
         return $result;
