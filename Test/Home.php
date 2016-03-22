@@ -2,7 +2,9 @@
 
 require_once '../Autoloads.php';
 
-$service = new \API\Service\Home();
+use Models\API\Service;
+
+$service = new Service\Home();
 $results = array();
 
 $Test = true;

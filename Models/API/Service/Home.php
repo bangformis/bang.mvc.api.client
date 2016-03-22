@@ -1,6 +1,6 @@
 <?php
 
-namespace API\Service;
+namespace Models\API\Service;
 
 /**
  * @author Bang
