@@ -1,8 +1,7 @@
 <?php
 
-namespace Models\API\Service;
+namespace Models\API\ApiName\Service;
 
-use Models\API;
 use Bang\Lib;
 
 /**
@@ -12,7 +11,7 @@ class Base {
 
     function __construct($controller, $url = null) {
         if ($url == null) {
-            $url = API\Config::ApiUrl;
+            $url = \ApiConfig::Url;
         }
         $this->url = $url;
         $this->controller = $controller;
@@ -35,12 +34,12 @@ class Base {
         $params = array_merge($bag, $this_array);
         $params['action'] = $action;
 
-        if (API\Config::Checksum) {
+        if (\ApiConfig::Checksum) {
             $params['Checksum'] = $this->GetChecksum($params);
         }
 
         $call_url = $this->url . '?' . http_build_query($params);
-        echo "{$call_url} \n";
+        error_log("{$call_url} \n");
         $response_content = Lib\Net::HttpGET($call_url);
         $result = json_decode($response_content);
         return $result;
@@ -48,7 +47,7 @@ class Base {
 
     private function GetChecksum($params) {
         $checksum_str = $this->GetChecksumString($params);
-        $check_sum_from = md5($checksum_str . API\Config::Key);
+        $check_sum_from = md5($checksum_str . \ApiConfig::Key);
         return $check_sum_from;
     }
 

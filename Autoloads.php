@@ -1,5 +1,7 @@
 <?php
 
+require_once 'Config.php';
+
 /**
  * 自動載入lib中的Class功能
  */
