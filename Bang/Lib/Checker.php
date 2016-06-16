@@ -8,6 +8,14 @@ namespace Bang\Lib;
  */
 class Checker {
 
+    public static function IsDate($string) {
+        if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $string)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static function IsEmail($input) {
         if (!filter_var($input, FILTER_VALIDATE_EMAIL)) {
             return false;
