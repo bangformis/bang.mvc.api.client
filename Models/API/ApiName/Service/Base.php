@@ -21,7 +21,6 @@ class Base {
     public $controller;
 
     /**
-     * 
      * @param type $bag
      * @param string $action
      * @return \TaskResult
