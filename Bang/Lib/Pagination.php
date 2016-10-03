@@ -187,10 +187,10 @@ class Pagination {
      * @return int 第幾筆
      */
     public function GetEndIndex() {
-        $totalPage = $this->GetTotalPages();
+        $total = $this->GetTotalItems();
         $result = $this->GetStartIndex() + $this->CountPerPage - 1;
-        if ($result > $totalPage) {
-            $result = $totalPage;
+        if ($result > $total) {
+            $result = $total;
         }
         return $result;
     }

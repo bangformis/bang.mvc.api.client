@@ -13,7 +13,6 @@ class HomeTest extends PHPUnit_Framework_TestCase {
         $service = new Service\Home();
         $email = 'bang@bang.mvc';
 
-
         $result1 = $service->TestSuccess($email);
         $this->assertTrue($result1->IsSuccess);
         $this->assertEquals($result1->Message, 'test success!');
