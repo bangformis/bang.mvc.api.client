@@ -61,7 +61,7 @@ class ViewBag {
     public static function GetTitle() {
         $current = ViewBag::Get();
 
-        if (Bang\Lib\String::IsNotNullOrSpace($current->Title)) {
+        if (Bang\Lib\eString::IsNotNullOrSpace($current->Title)) {
             return $current->Title . " - " . \Config::$SiteName;
         } else {
             return \Config::$SiteName;

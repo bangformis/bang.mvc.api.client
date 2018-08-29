@@ -2,7 +2,7 @@
 
 require_once 'auto_load.php';
 
-use Bang\Lib\String;
+use Bang\Lib\eString;
 
 /**
  * 字串功能測試
@@ -16,10 +16,10 @@ class StringTest extends PHPUnit_Framework_TestCase {
         $strTrue2 = NULL;
 
         //Act
-        $resultTrue1 = String::IsNullOrSpace($strTrue);
-        $resultFalse1 = String::IsNullOrSpace($strFalse);
-        $resultTrue2 = String::IsNullOrSpace($strTrue2);
-        $resultTrue3 = String::IsNullOrSpace("");
+        $resultTrue1 = eString::IsNullOrSpace($strTrue);
+        $resultFalse1 = eString::IsNullOrSpace($strFalse);
+        $resultTrue2 = eString::IsNullOrSpace($strTrue2);
+        $resultTrue3 = eString::IsNullOrSpace("");
 
         //Assert
         $this->assertEquals($resultTrue1, TRUE);
@@ -36,9 +36,9 @@ class StringTest extends PHPUnit_Framework_TestCase {
         $str3 = 'SiteController';
 
         // Act
-        $result1 = String::RemoveSuffix($str1, $suffix);
-        $result2 = String::RemoveSuffix($str2, $suffix);
-        $result3 = String::RemoveSuffix($str3, $suffix);
+        $result1 = eString::RemoveSuffix($str1, $suffix);
+        $result2 = eString::RemoveSuffix($str2, $suffix);
+        $result3 = eString::RemoveSuffix($str3, $suffix);
 
         // Assert
         $this->assertEquals($result1, "Home");
@@ -52,7 +52,7 @@ class StringTest extends PHPUnit_Framework_TestCase {
         $str = 'bla_string_bla_bla_bla';
 
         // Act
-        $result = String::RemovePrefix($str, $prefix);
+        $result = eString::RemovePrefix($str, $prefix);
 
         // Assert
         $this->assertEquals($result, "string_bla_bla_bla");
@@ -64,9 +64,9 @@ class StringTest extends PHPUnit_Framework_TestCase {
         $test2 = "";
 
         // Act
-        $isTrue = String::StartsWith($test, "test");
-        $isFlase = String::StartsWith($test, "1");
-        $isFalse2 = String::StartsWith($test2, "1");
+        $isTrue = eString::StartsWith($test, "test");
+        $isFlase = eString::StartsWith($test, "1");
+        $isFalse2 = eString::StartsWith($test2, "1");
 
         // Assert
         $this->assertTrue($isTrue);
@@ -80,9 +80,9 @@ class StringTest extends PHPUnit_Framework_TestCase {
         $test2 = "";
 
         // Act
-        $isFlase = String::EndsWith($test, "test");
-        $isTrue = String::EndsWith($test, "1");
-        $isFalse2 = String::EndsWith($test2, "1");
+        $isFlase = eString::EndsWith($test, "test");
+        $isTrue = eString::EndsWith($test, "1");
+        $isFalse2 = eString::EndsWith($test2, "1");
 
         // Assert
         $this->assertTrue($isTrue);

@@ -25,7 +25,7 @@ class Path {
      * @return string
      */
     public static function Content($url) {
-        if (!String::StartsWith($url, "/")) {
+        if (!eString::StartsWith($url, "/")) {
             $url = "/$url";
         }
         if (\Config::DirSplitor == "\\") {

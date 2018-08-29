@@ -23,7 +23,7 @@ class MySqlDb {
         $pdo = new \PDO("mysql:host={$host};charset=utf8", $username, $password);
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $pdo->exec("set names utf8;");
-        if (String::IsNotNullOrSpace($name)) {
+        if (eString::IsNotNullOrSpace($name)) {
             $pdo->exec("USE {$name};");
         }
 
@@ -113,7 +113,7 @@ class MySqlDb {
     public function QuickInsert($tablename, $params) {
         $keys = array();
         foreach ($params as $key => $value) {
-            $keys[] = String::Replace($key, ':', '');
+            $keys[] = eString::Replace($key, ':', '');
         }
 
         $fields = "";
@@ -141,13 +141,13 @@ class MySqlDb {
     public function QuickUpdate($tablename, $where, $params) {
         $keys = array();
         foreach ($params as $key => $value) {
-            $keys[] = String::Replace($key, ':', '');
+            $keys[] = eString::Replace($key, ':', '');
         }
 
         $set_sql = "";
         $count = 0;
         foreach ($keys as $value) {
-            if (String::StartsWith($value, 'where')) {
+            if (eString::StartsWith($value, 'where')) {
                 continue;
             }
             if ($count > 0) {

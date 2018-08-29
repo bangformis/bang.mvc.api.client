@@ -15,7 +15,7 @@ class Config {
 
 class ApiConfig {
 
-    const Url = 'http://localhost:8088/index.php';
+    const Url = 'http://localhost/bang.mvc/index.php';
     const Checksum = true;
     const Key = 'bang_api_test';
 

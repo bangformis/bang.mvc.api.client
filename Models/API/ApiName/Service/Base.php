@@ -60,7 +60,7 @@ class Base {
         ksort($array);
         $check_sum = '';
         foreach ($array as $key => $value) {
-            if ($key == 'controller' || $key == 'action' || $key == 'Checksum' || Lib\String::StartsWith($key, '_')) {
+            if ($key == 'controller' || $key == 'action' || $key == 'Checksum' || Lib\eString::StartsWith($key, '_')) {
                 continue;
             }
             $check_sum .= "{$key}:{$value},";
