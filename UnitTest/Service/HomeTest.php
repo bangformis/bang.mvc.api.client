@@ -9,17 +9,11 @@ use Models\API\ApiName\Service;
  */
 class HomeTest extends PHPUnit_Framework_TestCase {
 
-    public function testTestSuccess() {
+    public function testSuccess() {
         $service = new Service\Home();
-        $email = 'bang@bang.mvc';
 
-        $result1 = $service->TestSuccess($email);
+        $result1 = $service->Success();
         $this->assertTrue($result1->IsSuccess);
-        $this->assertEquals($result1->Message, 'test success!');
-
-        $result2 = $service->TestUnSuccess($email);
-        $this->assertFalse($result2->IsSuccess);
-        $this->assertEquals($result2->Message, 'test unsuccess!');
     }
 
 }
