@@ -28,10 +28,11 @@ class Path {
         if (!eString::StartsWith($url, "/")) {
             $url = "/$url";
         }
-        if (\Config::DirSplitor == "\\") {
+        if (DIRECTORY_SEPARATOR == "\\") {
             $url = str_replace("/", "\\", $url);
         }
-        return \Config::$Path . $url;
+        $root = \Config::$Path;
+        return $root . $url;
     }
 
     /**

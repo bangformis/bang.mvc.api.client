@@ -11,11 +11,11 @@ class SqlBag {
     /**
      * 建立SqlBag
      * @param string $PrepareSql
-     * @param array $KeyValues
+     * @param array $Parameters
      */
-    function __construct($PrepareSql, $KeyValues) {
+    function __construct($PrepareSql, $Parameters) {
         $this->PrepareSql = $PrepareSql;
-        $this->KeyValues = $KeyValues;
+        $this->Parameters = $Parameters;
     }
 
     /**
@@ -26,6 +26,6 @@ class SqlBag {
     /**
      * @var array 即將注入的欄位與值
      */
-    public $KeyValues;
+    public $Parameters;
 
 }

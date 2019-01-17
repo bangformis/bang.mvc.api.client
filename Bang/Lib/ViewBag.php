@@ -40,7 +40,7 @@ class ViewBag {
      * 將ViewBag寫入ResponseBag中
      */
     public function Write() {
-        \Bang\Lib\ResponseBag::Add(ViewBag::ResponseBagName, $this);
+        ResponseBag::Add(ViewBag::ResponseBagName, $this);
     }
 
     /**
@@ -48,10 +48,10 @@ class ViewBag {
      * @return ViewBag 當前ViewBag
      */
     public static function Get() {
-        if (!\Bang\Lib\ResponseBag::Contains(ViewBag::ResponseBagName)) {
-            \Bang\Lib\ResponseBag::Add(ViewBag::ResponseBagName, new ViewBag());
+        if (!ResponseBag::Contains(ViewBag::ResponseBagName)) {
+            ResponseBag::Add(ViewBag::ResponseBagName, new ViewBag());
         }
-        return \Bang\Lib\ResponseBag::Get(ViewBag::ResponseBagName);
+        return ResponseBag::Get(ViewBag::ResponseBagName);
     }
 
     /**
@@ -61,7 +61,7 @@ class ViewBag {
     public static function GetTitle() {
         $current = ViewBag::Get();
 
-        if (Bang\Lib\eString::IsNotNullOrSpace($current->Title)) {
+        if (eString::IsNotNullOrSpace($current->Title)) {
             return $current->Title . " - " . \Config::$SiteName;
         } else {
             return \Config::$SiteName;

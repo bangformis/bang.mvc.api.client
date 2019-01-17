@@ -12,15 +12,18 @@ class MySqlDb {
     protected $name;
     protected $username;
     protected $password;
+    protected $port;
+    private $transaction_count;
 
-    function __construct($host, $username, $password, $name = null) {
+    function __construct($host, $username, $password, $name = null, $port = 3306) {
 
         $this->host = $host;
         $this->name = $name;
         $this->username = $username;
         $this->password = $password;
+        $this->port = $port;
 
-        $pdo = new \PDO("mysql:host={$host};charset=utf8", $username, $password);
+        $pdo = new \PDO("mysql:host={$host};port={$port};charset=utf8", $username, $password);
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $pdo->exec("set names utf8;");
         if (eString::IsNotNullOrSpace($name)) {
@@ -28,6 +31,8 @@ class MySqlDb {
         }
 
         $this->pdo = $pdo;
+        $this->transaction_count = 0;
+        $this->table_exists = array();
     }
 
     /**
@@ -65,36 +70,56 @@ class MySqlDb {
         return $stem->rowCount() == 1;
     }
 
+    private $table_exists;
+
     /**
      * 判斷資料表是否存在
      * @param string $table_name
      * @return boolean 判斷結果
      */
     public function IsTableExist($table_name) {
+        if (isset($this->table_exists[$table_name])) {
+            return true;
+        }
+
         $sql = "show tables like '{$table_name}'";
         $query_result = $this->Query($sql);
         $query_result->fetchAll(\PDO::FETCH_ASSOC);
         $row_count = $query_result->rowCount();
-        return $row_count > 0;
-    }
-
-    public function BeginTransaction() {
-        $result = $this->pdo->beginTransaction();
-        if (!$result) {
-            throw new \Exception('Begin Transaction Error!', \Models\ErrorCode::DatabaseError);
+        if ($row_count > 0) {
+            $this->table_exists[$table_name] = true;
+            return true;
+        } else {
+            return false;
         }
     }
 
+    public function BeginTransaction() {
+        if ($this->transaction_count === 0) {
+            $result = $this->pdo->beginTransaction();
+            if (!$result) {
+                throw new \Exception('Begin Transaction Error!', \Models\ErrorCode::DatabaseError);
+            }
+        }
+        $this->transaction_count += 1;
+    }
+
     public function Commit() {
-        $result = $this->pdo->commit();
-        if (!$result) {
-            throw new \Exception('Commit Transaction Error!', \Models\ErrorCode::DatabaseError);
+        if ($this->transaction_count > 0) {
+            $this->transaction_count -= 1;
+            if ($this->transaction_count === 0) {
+                $result = $this->pdo->commit();
+                if (!$result) {
+                    throw new \Exception('Commit Transaction Error!', \Models\ErrorCode::DatabaseError);
+                }
+            }
         }
     }
 
     public function Rollback() {
         if ($this->pdo->inTransaction()) {
             $result = $this->pdo->rollBack();
+            $this->transaction_count = 0;
             if (!$result) {
                 throw new \Exception('Rollback Transaction Error!', \Models\ErrorCode::DatabaseError);
             }
@@ -111,11 +136,16 @@ class MySqlDb {
      * @return string last_insert_id
      */
     public function QuickInsert($tablename, $params) {
+        $sql = $this->GetInsertQuery($tablename, $params);
+        $result = $this->Insert($sql, $params);
+        return $result;
+    }
+
+    private function GetInsertQuery($tablename, $params) {
         $keys = array();
         foreach ($params as $key => $value) {
             $keys[] = eString::Replace($key, ':', '');
         }
-
         $fields = "";
         $values = "";
         foreach ($keys as $key => $value) {
@@ -127,8 +157,87 @@ class MySqlDb {
             $values .= " :{$value}";
         }
         $sql = "INSERT INTO `{$tablename}`($fields) VALUES ($values) ;";
-        $result = $this->Insert($sql, $params);
-        return $result;
+        return $sql;
+    }
+
+    public function QuickInsertOrAdd($tablename, $params, $un_updates) {
+        $keys = array();
+        foreach ($params as $key => $value) {
+            $keys[] = eString::Replace($key, ':', '');
+        }
+        $fields = "";
+        $values = "";
+
+        $count = 0;
+        $set_sql = "";
+
+        foreach ($keys as $key => $value) {
+            // <editor-fold defaultstate="collapsed" desc="Inserts">
+
+            if ($key > 0) {
+                $fields .= ",";
+                $values .= ",";
+            }
+            $fields .= "`{$value}`";
+            $values .= " :{$value}";
+
+            // </editor-fold>
+            // <editor-fold defaultstate="collapsed" desc="For Update">
+
+            if (!in_array($value, $un_updates)) {
+                if ($count > 0) {
+                    $set_sql .= ",";
+                }
+                $set_sql .= "`{$value}`=`{$value}`+VALUES(`{$value}`)";
+                $count++;
+            }
+
+            // </editor-fold>
+        }
+        $inser_sql = "INSERT INTO `{$tablename}`($fields) VALUES ($values) ";
+        $sql = "{$inser_sql} ON DUPLICATE KEY UPDATE {$set_sql} ;";
+        $stem = $this->Query($sql, $params);
+        return $stem;
+    }
+
+    public function QuickInsertOrUpdate($tablename, $params, $un_updates) {
+        $keys = array();
+        foreach ($params as $key => $value) {
+            $keys[] = eString::Replace($key, ':', '');
+        }
+        $fields = "";
+        $values = "";
+
+        $count = 0;
+        $set_sql = "";
+
+        foreach ($keys as $key => $value) {
+            // <editor-fold defaultstate="collapsed" desc="Inserts">
+
+            if ($key > 0) {
+                $fields .= ",";
+                $values .= ",";
+            }
+            $fields .= "`{$value}`";
+            $values .= " :{$value}";
+
+            // </editor-fold>
+            // <editor-fold defaultstate="collapsed" desc="For Update">
+
+            if (!in_array($value, $un_updates)) {
+                if ($count > 0) {
+                    $set_sql .= ",";
+                }
+                $set_sql .= "`{$value}`=VALUES(`{$value}`)";
+                $count++;
+            }
+
+            // </editor-fold>
+        }
+        $inser_sql = "INSERT INTO `{$tablename}`($fields) VALUES ($values) ";
+        $sql = "{$inser_sql} ON DUPLICATE KEY UPDATE {$set_sql} ;";
+        $stem = $this->Query($sql, $params);
+        return $stem;
     }
 
     /**
@@ -159,6 +268,25 @@ class MySqlDb {
 
         $sql = "UPDATE `{$tablename}` SET {$set_sql} WHERE ({$where})";
         $result = $this->Query($sql, $params);
+        return $result;
+    }
+
+    /**
+     * Must query by SQL_CALC_FOUND_ROWS before this function
+     */
+    public function GetSqlCalcFoundRows() {
+        $sql = "SELECT FOUND_ROWS() as totals;";
+        $stem = $this->Query($sql);
+        $data = $stem->fetch(2);
+        return $data['totals'];
+    }
+
+    public static function GetParamsByObject($obj) {
+        $datas = ORM::ObjectToArray($obj);
+        $result = array();
+        foreach ($datas as $key => $value) {
+            $result[":{$key}"] = $value;
+        }
         return $result;
     }
 

@@ -51,7 +51,7 @@ class eString {
      * @return bool 判斷結果
      */
     public static function IsNotNullOrSpace($str) {
-        return !eeString::IsNullOrSpace($str);
+        return !eString::IsNullOrSpace($str);
     }
 
     /**

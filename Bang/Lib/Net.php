@@ -8,6 +8,16 @@ namespace Bang\Lib;
 class Net {
 
     /**
+     * @param string $file_full_name
+     * @param string $url
+     * @return int size for bytes
+     */
+    public static function Download($file_full_name,  $url){
+        $size_bytes = file_put_contents($file_full_name, fopen($url, 'r'));
+        return $size_bytes;
+    }
+    
+    /**
      * 以Gmail寄送信件
      * @param string $login_email 登入的Email
      * @param string $login_password 登入密碼

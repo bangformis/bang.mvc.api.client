@@ -2,6 +2,8 @@
 
 namespace Bang\Lib;
 
+use Bang\MVC\Route;
+
 /**
  * 處理網址擴充功能
  * @author Bang
@@ -15,7 +17,7 @@ class Url {
      * @return string
      */
     public static function Content($url) {
-        return Config::$Root . $url;
+        return \Config::$Root . $url;
     }
 
     /**
@@ -25,7 +27,8 @@ class Url {
      * @return string View檔案網址
      */
     public static function View($name, $className = "") {
-        $viewFile = Config::$Root . "Views/$className/$name.php";
+        $root = \Config::$Root;
+        $viewFile = "{$root}Views/$className/$name.php";
         return $viewFile;
     }
 
@@ -36,32 +39,33 @@ class Url {
      * @return string View檔案網址
      */
     public static function ShareView($name) {
-        $viewFile = Config::$Root . "Views/Shared/$name.php";
+        $root = \Config::$Root;
+        $viewFile = "{$root}Views/Shared/{$name}.php";
         return $viewFile;
     }
 
     /**
      * 取得Action網址
-     * @param string $actionName Action名稱
-     * @param string $controllerName Controller名稱
-     * @param mixed $getParam 其他參數
+     * @param string $action Action名稱
+     * @param string $controller Controller名稱
+     * @param mixed $params 其他參數
      * @return string Action網址
      */
-    public static function Action($actionName, $controllerName = "", $getParam = null) {
-        if (empty($controllerName)) {
-            $controllerName = Route::Current()->controller;
+    public static function Action($action, $controller = "", $params = null) {
+        if (eString::IsNullOrSpace($controller)) {
+            $controller = Route::Current()->controller;
         }
-        if ((!is_null($getParam)) && (!is_array($getParam))) {
-            $getParam = get_object_vars($getParam);
+        if (is_null($params)) {
+            $params = array();
         }
-
-        $resultUrl = Config::$Root . "index.php?controller=$controllerName&action=$actionName";
-        if (!is_null($getParam)) {
-            foreach ($getParam as $key => $value) {
-                $value = urlencode($value);
-                $resultUrl .= "&$key=$value";
-            }
+        if (!is_array($params)) {
+            $params = get_object_vars($params);
         }
+        $params['action'] = $action;
+        $params['controller'] = $controller;
+        $query_string = http_build_query($params);
+        $root = \Config::$Root;
+        $resultUrl = "{$root}index.php?{$query_string}";
         return $resultUrl;
     }
 

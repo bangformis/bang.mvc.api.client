@@ -23,6 +23,10 @@ class Pagination {
     private $CurrentPage;
     private $CountPerPage;
 
+    public function SetTotalItems($totals) {
+        $this->TotalItems = $totals;
+    }
+    
     /**
      * 取得建立分頁功能模組Html
      * @param string $linkBase 尚未加入page=xx的網址
@@ -222,4 +226,8 @@ class Pagination {
         return $this->CountPerPage * ($this->CurrentPage - 1);
     }
 
+    public function ToNextPage(){
+        $this->CurrentPage += 1;
+    }
+    
 }

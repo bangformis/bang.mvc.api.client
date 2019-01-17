@@ -8,9 +8,6 @@ class Config {
     public static $Root = "/";
     public static $Path = __DIR__;
 
-    //系統使用的目錄分隔符號
-    const DirSplitor = "\\";
-
 }
 
 class ApiConfig {

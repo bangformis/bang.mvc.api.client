@@ -28,10 +28,3 @@ function __autoload($classname) {
         }
     }
 }
-
-function EchoTestResult($test_results = array()) {
-    foreach ($test_results as $key => $value) {
-        $result = $value->IsSuccess ? 'OK' : 'NO';
-        echo "{$result}.[{$key}]=>" . json_encode($value) . "\n";
-    }
-}

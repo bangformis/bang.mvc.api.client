@@ -1,16 +1,18 @@
 <?php
 
 require_once '../Config.php';
-spl_autoload_register(function ($classname) {
-    if ($classname == 'PHPUnit_Extensions_Story_TestCase' || $classname == 'Composer\Autoload\ClassLoader') {
-        return;
+
+/**
+ * 自動載入lib中的Class功能
+ */
+function __mvc_system_autoload($classname) {
+    $namespace_name = str_replace("\\", DIRECTORY_SEPARATOR, $classname);
+    $namespace_path = __DIR__ . DIRECTORY_SEPARATOR . $namespace_name . '.php';
+    if (file_exists($namespace_path)) {
+        require_once($namespace_path);
     } else {
-        $namespace_name = str_replace("\\", Config::DirSplitor, $classname);
-        $namespace_path = Config::$Path . Config::DirSplitor . $namespace_name . '.php';
-        if (file_exists($namespace_path)) {
-            require_once($namespace_path);
-        } else {
-            throw new Exception("找不到 {$classname} 這個Class檔案，無法載入！");
-        }
+        throw new Exception("The class {$classname} was not found!");
     }
-});
+}
+
+spl_autoload_register('__mvc_system_autoload');

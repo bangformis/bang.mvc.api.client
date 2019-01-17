@@ -2,6 +2,10 @@
 
 namespace Bang\Lib;
 
+use Bang\Lib\eString;
+use Bang\Lib\Url;
+use Bang\Lib\Path;
+
 /**
  * @author Bang
  */
