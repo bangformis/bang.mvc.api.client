@@ -10,10 +10,11 @@ class Config {
 
 }
 
-class ApiConfig {
+class ConfigApiName {
 
-    const Url = 'http://localhost/bang.mvc/index.php';
-    const Checksum = true;
-    const Key = 'bang_api_test';
+    const ApiUrl = 'http://localhost/bang.mvc/index.php';
+    const EnableChecksum = true;
+    const ChecksumKey = 'bang_api_test';
+    const EnableLog = true;
 
 }
