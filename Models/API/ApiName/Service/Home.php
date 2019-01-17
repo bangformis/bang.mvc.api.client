@@ -11,9 +11,9 @@ class Home extends Base {
         parent::__construct('Home');
     }
 
-    public function Success() {
+    public function TestSuccess($email) {
         $bag = array(
-            
+            'email' => $email
         );
         return $this->CallApi($bag, __FUNCTION__);
     }
